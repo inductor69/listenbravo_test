@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV</title>
+    <style>
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .table, .table th, .table td {
+            border: 1px solid black;
+        }
+        .table th, .table td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload CSV File</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" accept=".csv" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="preview"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            const fileInput = document.getElementById('fileInput');
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/upload-csv/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const htmlContent = await response.text();
+                document.getElementById('preview').innerHTML = htmlContent;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('preview').textContent = 'An error occurred while uploading the file.';
+            }
+        });
+    </script>
+</body>
+</html>
